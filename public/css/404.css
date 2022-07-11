@@ -1,0 +1,13 @@
+main {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+/* Responsive pour la version mobile */
+@media all and (max-width: 991px)
+{
+    main img {
+        width: 100%;
+    }
+}

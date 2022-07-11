@@ -22,5 +22,10 @@ app.get("/", async (req, res) => {
     res.render('index.ejs');
 });
 
+// Page erreur 404
+app.get('*', (req, res) => {
+    res.render('404.ejs');
+});
+
 // Hébergement du serveur sur le port 3000
 app.listen(3000, () => console.log("Server is running!"));
