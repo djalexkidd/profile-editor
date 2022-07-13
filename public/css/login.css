@@ -1,0 +1,55 @@
+/* Aucune bordure */
+*, ::before, ::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+/* Police d'écriture */
+@font-face {
+    font-family: 'Roboto';
+    src : url('../fonts/Roboto.ttf') format('truetype');
+}
+
+/* Couleur de l'arrière-plan */
+body {
+    background-color: #3a5693;
+    font-family: 'Roboto', Arial, Helvetica, sans-serif;
+    font-size: 24px;
+}
+
+/* Image du site, Bouton se connecter */
+img {
+    position: absolute;
+    top: 25%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    height: 25vh;
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+    position: absolute;
+    top: 60%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.option-component {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    width: 355px;
+    color: white;
+    margin-bottom: 20px;
+}
+
+.submit-form {
+    width: 200px;
+    height: 50px;
+    border: none;
+    border-radius: 20px;
+    font-size: 24px;
+    margin: 0 auto;
+}

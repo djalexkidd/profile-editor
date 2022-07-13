@@ -16,15 +16,58 @@ const app = express();
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, "public")));
 app.set('view engine', 'ejs');
+app.use(cookieParser());
 
 // Page d'accueil
 app.get("/", async (req, res) => {
-    res.render('index.ejs');
+    if (req.cookies.token !== undefined) {
+        ad.findUser(req.cookies.token, function(err, user) {
+            if (err) {
+                console.log('ERROR: ' +JSON.stringify(err));
+                return;
+            }
+
+            if (! user) console.log('User: ' + req.cookies.token + ' not found.');
+            else res.render('index.ejs', {
+                userfullname: user.cn,
+                useremail: user.userPrincipalName
+            });
+        })
+    } else {
+        res.redirect('/login');
+    }
 });
+
+// Page d'authentification
+app.get("/login", (req, res) => {
+    res.render("login.ejs");
+  });
 
 // Page erreur 404
 app.get('*', (req, res) => {
     res.render('404.ejs');
+});
+
+// Envoi du formulaire de connexion
+app.post('/login', (req, res, next) => {
+    const { userEmail, userPassword } = req.body; // Charge les données du formulaire
+    ad.authenticate(userEmail, userPassword, function(err, auth) {
+      if (err) {
+          console.log('ERROR: '+JSON.stringify(err));
+          res.redirect('/login');
+          return;
+      }
+      if (auth) {
+          res.cookie(`token`, userEmail);
+          res.cookie(`token2`, userPassword);
+          console.log(userEmail + " s'est connecté !");
+          res.redirect('/');
+      }
+      else {
+          console.log('Authentication failed!');
+          res.redirect('/login');
+      }
+    });
 });
 
 // Hébergement du serveur sur le port 3000

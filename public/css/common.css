@@ -52,6 +52,11 @@ header {
     align-items: center;
 }
 
+main {
+    margin-top: 25px;
+    font-family: "Roboto", Arial, Helvetica, sans-serif;
+}
+
 /* Responsive pour la version mobile */
 @media all and (max-width: 991px)
 {
