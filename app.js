@@ -64,7 +64,14 @@ app.get("/", async (req, res) => {
 // Page d'authentification
 app.get("/login", (req, res) => {
     res.render("login.ejs");
-  });
+});
+
+app.get('/logout', (req, res) => {
+    res.clearCookie("token");
+    res.clearCookie("token2");
+    res.clearCookie("token3");
+    res.redirect('/login');
+});
 
 // Page erreur 404
 app.get('*', (req, res) => {
@@ -117,21 +124,46 @@ app.post('/', (req, res, next) => {
             title: userTitle
         }
     });
-      
-    client.modify('cn=' + req.cookies.token3 + ',cn=Users,dc=saint-poggers,dc=fr', changeOne, (err) => {
-        assert.ifError(err);
+
+    ad.findUser(req.cookies.token, function(err, user) {
+        if (err) {
+            console.log('ERROR: ' +JSON.stringify(err));
+            return;
+        }
+
+        if (! user) console.log('User: ' + req.cookies.token + ' not found.');
+        else {
+            if (user.cn !== req.cookies.token3) {
+                res.redirect('/login');
+            }
+        }
     });
 
-    client.modify('cn=' + req.cookies.token3 + ',cn=Users,dc=saint-poggers,dc=fr', changeTwo, (err) => {
-        assert.ifError(err);
-    });
+    ad.authenticate(req.cookies.token, req.cookies.token2, function(err, auth) {
+        if (err) {
+            console.log('ERROR: '+JSON.stringify(err));
+            res.redirect('/login');
+            return;
+        }
+        if (auth) {
+            client.modify('cn=' + req.cookies.token3 + ',cn=Users,dc=saint-poggers,dc=fr', changeOne, (err) => {
+                assert.ifError(err);
+            });
+        
+            client.modify('cn=' + req.cookies.token3 + ',cn=Users,dc=saint-poggers,dc=fr', changeTwo, (err) => {
+                assert.ifError(err);
+            });
+        
+            client.modify('cn=' + req.cookies.token3 + ',cn=Users,dc=saint-poggers,dc=fr', changeThree, (err) => {
+                assert.ifError(err);
+            });
 
-    client.modify('cn=' + req.cookies.token3 + ',cn=Users,dc=saint-poggers,dc=fr', changeThree, (err) => {
-        assert.ifError(err);
+            res.redirect('/');
+        } else {
+            res.redirect('/login');
+        }
     });
-
-    res.redirect('/');
-})
+});
 
 // Hébergement du serveur sur le port 3000
 app.listen(3000, () => console.log("Server is running!"));
