@@ -31,17 +31,17 @@
         <form action="" method="post">
             <div class="option-component">
                 <p>Téléphone:</p>
-                <input name="userTel" value="<%= usertelephone %>">
+                <input maxlength="10" name="userTel" value="<%= usertelephone %>" required>
             </div>
 
             <div class="option-component">
                 <p class="mobile-shrink">Téléphone mobile:</p>
-                <input name="userTelMobile" value="<%= usermobile %>">
+                <input maxlength="10" name="userTelMobile" value="<%= usermobile %>" required>
             </div>
 
             <div class="option-component">
                 <p>Fonction:</p>
-                <input name="userTitle" value="<%= usertitle %>">
+                <input name="userTitle" value="<%= usertitle %>" required>
             </div>
 
             <input class="sendform" type="submit">

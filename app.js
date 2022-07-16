@@ -10,9 +10,25 @@ const ad_config = { url: process.env.AD_SERVER,
                username: process.env.AD_USERNAME,
                password: process.env.AD_PASSWORD,
                attributes: {
-                user: ['userPrincipalName', 'cn', 'telephoneNumber', 'otherTelephone', 'title', 'givenName', 'sn', 'department' ]
+                user: ['userPrincipalName', 'cn', 'telephoneNumber', 'otherTelephone', 'title', 'givenName', 'department' ]
               } }
 const ad = new ActiveDirectory(ad_config);
+
+// Configuration de l'Active Directory pour la modification
+const ldap = require('ldapjs');
+const assert = require('assert');
+
+const client = ldap.createClient({
+  url: [process.env.AD_SERVER]
+});
+
+client.bind(process.env.AD_USERNAME, process.env.AD_PASSWORD, (err) => {
+    assert.ifError(err);
+});
+
+client.on('error', (err) => {
+  console.log(err)
+})
 
 const app = express();
 
@@ -31,7 +47,7 @@ app.get("/", async (req, res) => {
             }
 
             if (! user) console.log('User: ' + req.cookies.token + ' not found.');
-            else res.render('index.ejs', {
+            else res.cookie(`token3`, user.cn); res.render('index.ejs', {
                 userfullname: user.cn,
                 useremail: user.userPrincipalName,
                 userdepartment: user.department,
@@ -80,6 +96,40 @@ app.post('/login', (req, res, next) => {
 // Envoi du formulaire d'édition
 app.post('/', (req, res, next) => {
     const { userTel, userTelMobile, userTitle } = req.body; // Charge les données du formulaire
+
+    const changeOne = new ldap.Change({
+        operation: 'replace',
+        modification: {
+            telephoneNumber: [userTel]
+        }
+    });
+
+    const changeTwo = new ldap.Change({
+        operation: 'replace',
+        modification: {
+            otherTelephone: [userTelMobile]
+        }
+    });
+
+    const changeThree = new ldap.Change({
+        operation: 'replace',
+        modification: {
+            title: userTitle
+        }
+    });
+      
+    client.modify('cn=' + req.cookies.token3 + ',cn=Users,dc=saint-poggers,dc=fr', changeOne, (err) => {
+        assert.ifError(err);
+    });
+
+    client.modify('cn=' + req.cookies.token3 + ',cn=Users,dc=saint-poggers,dc=fr', changeTwo, (err) => {
+        assert.ifError(err);
+    });
+
+    client.modify('cn=' + req.cookies.token3 + ',cn=Users,dc=saint-poggers,dc=fr', changeThree, (err) => {
+        assert.ifError(err);
+    });
+
     res.redirect('/');
 })
 
