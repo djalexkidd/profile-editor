@@ -26,6 +26,27 @@
     <main>
         <h1><%= userfullname %></h1>
         <h2><%= useremail %></h2>
+        <h2><%= userdepartment %></h2>
+        <div class="container">
+        <form action="" method="post">
+            <div class="option-component">
+                <p>Téléphone:</p>
+                <input name="userTel" value="<%= usertelephone %>">
+            </div>
+
+            <div class="option-component">
+                <p class="mobile-shrink">Téléphone mobile:</p>
+                <input name="userTelMobile" value="<%= usermobile %>">
+            </div>
+
+            <div class="option-component">
+                <p>Fonction:</p>
+                <input name="userTitle" value="<%= usertitle %>">
+            </div>
+
+            <input class="sendform" type="submit">
+        </form>
+        </div>
     </main>
 </body>
 </html>

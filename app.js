@@ -8,7 +8,10 @@ const ActiveDirectory = require('activedirectory2');
 const ad_config = { url: process.env.AD_SERVER,
                baseDN: process.env.AD_BASEDN,
                username: process.env.AD_USERNAME,
-               password: process.env.AD_PASSWORD }
+               password: process.env.AD_PASSWORD,
+               attributes: {
+                user: ['userPrincipalName', 'cn', 'telephoneNumber', 'otherTelephone', 'title', 'givenName', 'sn', 'department' ]
+              } }
 const ad = new ActiveDirectory(ad_config);
 
 const app = express();
@@ -30,7 +33,11 @@ app.get("/", async (req, res) => {
             if (! user) console.log('User: ' + req.cookies.token + ' not found.');
             else res.render('index.ejs', {
                 userfullname: user.cn,
-                useremail: user.userPrincipalName
+                useremail: user.userPrincipalName,
+                userdepartment: user.department,
+                usertelephone: user.telephoneNumber,
+                usermobile: user.otherTelephone,
+                usertitle: user.title
             });
         })
     } else {
@@ -69,6 +76,12 @@ app.post('/login', (req, res, next) => {
       }
     });
 });
+
+// Envoi du formulaire d'édition
+app.post('/', (req, res, next) => {
+    const { userTel, userTelMobile, userTitle } = req.body; // Charge les données du formulaire
+    res.redirect('/');
+})
 
 // Hébergement du serveur sur le port 3000
 app.listen(3000, () => console.log("Server is running!"));
