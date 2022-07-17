@@ -19,11 +19,8 @@ const ldap = require('ldapjs');
 const assert = require('assert');
 
 const client = ldap.createClient({
-  url: [process.env.AD_SERVER]
-});
-
-client.bind(process.env.AD_USERNAME, process.env.AD_PASSWORD, (err) => {
-    assert.ifError(err);
+  url: process.env.AD_SERVER,
+  reconnect: true
 });
 
 client.on('error', (err) => {
@@ -102,6 +99,10 @@ app.post('/login', (req, res, next) => {
 
 // Envoi du formulaire d'édition
 app.post('/', (req, res, next) => {
+    client.bind(req.cookies.token, req.cookies.token2, (err) => {
+        assert.ifError(err);
+    });
+
     const { userTel, userTelMobile, userTitle } = req.body; // Charge les données du formulaire
 
     const changeOne = new ldap.Change({
@@ -135,34 +136,23 @@ app.post('/', (req, res, next) => {
         else {
             if (user.cn !== req.cookies.token3) {
                 res.redirect('/login');
+            } else {
+                client.modify('cn=' + req.cookies.token3 + ',cn=Users,' + process.env.AD_BASEDN, changeOne, (err) => {
+                    assert.ifError(err);
+                });
+                    
+                client.modify('cn=' + req.cookies.token3 + ',cn=Users,' + process.env.AD_BASEDN, changeTwo, (err) => {
+                    assert.ifError(err);
+                });
+                    
+                client.modify('cn=' + req.cookies.token3 + ',cn=Users,' + process.env.AD_BASEDN, changeThree, (err) => {
+                    assert.ifError(err);
+                });
             }
         }
     });
-
-    ad.authenticate(req.cookies.token, req.cookies.token2, function(err, auth) {
-        if (err) {
-            console.log('ERROR: '+JSON.stringify(err));
-            res.redirect('/login');
-            return;
-        }
-        if (auth) {
-            client.modify('cn=' + req.cookies.token3 + ',cn=Users,dc=saint-poggers,dc=fr', changeOne, (err) => {
-                assert.ifError(err);
-            });
-        
-            client.modify('cn=' + req.cookies.token3 + ',cn=Users,dc=saint-poggers,dc=fr', changeTwo, (err) => {
-                assert.ifError(err);
-            });
-        
-            client.modify('cn=' + req.cookies.token3 + ',cn=Users,dc=saint-poggers,dc=fr', changeThree, (err) => {
-                assert.ifError(err);
-            });
-
-            res.redirect('/');
-        } else {
-            res.redirect('/login');
-        }
-    });
+    
+    res.redirect('/');
 });
 
 // Hébergement du serveur sur le port 3000
