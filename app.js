@@ -31,7 +31,7 @@ function getAdUser(req) {
            username: req.cookies.token,
            password: req.cookies.token2,
            attributes: {
-            user: ['userPrincipalName', 'cn', 'telephoneNumber', 'otherTelephone', 'title', 'givenName', 'department' ]
+            user: ['userPrincipalName', 'cn', 'telephoneNumber', 'otherTelephone', 'title', 'givenName', 'department', 'ipPhone']
           } }
     const ad = new ActiveDirectory(ad_config);
 
@@ -54,7 +54,8 @@ app.get("/", async (req, res) => {
                 userdepartment: user.department,
                 usertelephone: user.telephoneNumber,
                 usermobile: user.otherTelephone,
-                usertitle: user.title
+                usertitle: user.title,
+                userabr: user.ipPhone
             });
         })
     } else {
@@ -112,7 +113,7 @@ app.post('/', (req, res, next) => {
         assert.ifError(err);
     });
 
-    const { userTel, userTelMobile, userTitle } = req.body; // Charge les données du formulaire
+    const { userTel, userTelMobile, userAbr, userTitle } = req.body; // Charge les données du formulaire
 
     const changeOne = new ldap.Change({
         operation: 'replace',
@@ -132,6 +133,13 @@ app.post('/', (req, res, next) => {
         operation: 'replace',
         modification: {
             title: userTitle
+        }
+    });
+
+    const changeFour = new ldap.Change({
+        operation: 'replace',
+        modification: {
+            ipPhone: userAbr
         }
     });
 
@@ -155,6 +163,10 @@ app.post('/', (req, res, next) => {
                 });
                     
                 client.modify('cn=' + req.cookies.token3 + ',cn=Users,' + process.env.AD_BASEDN, changeThree, (err) => {
+                    assert.ifError(err);
+                });
+
+                client.modify('cn=' + req.cookies.token3 + ',cn=Users,' + process.env.AD_BASEDN, changeFour, (err) => {
                     assert.ifError(err);
                 });
             }
