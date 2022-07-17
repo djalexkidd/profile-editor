@@ -3,17 +3,6 @@ const express = require("express");
 const path = require("path");
 const cookieParser = require('cookie-parser')
 
-// Configuration de l'Active Directory
-const ActiveDirectory = require('activedirectory2');
-const ad_config = { url: process.env.AD_SERVER,
-               baseDN: process.env.AD_BASEDN,
-               username: process.env.AD_USERNAME,
-               password: process.env.AD_PASSWORD,
-               attributes: {
-                user: ['userPrincipalName', 'cn', 'telephoneNumber', 'otherTelephone', 'title', 'givenName', 'department' ]
-              } }
-const ad = new ActiveDirectory(ad_config);
-
 // Configuration de l'Active Directory pour la modification
 const ldap = require('ldapjs');
 const assert = require('assert');
@@ -34,10 +23,25 @@ app.use(express.static(path.join(__dirname, "public")));
 app.set('view engine', 'ejs');
 app.use(cookieParser());
 
+// Configuration de l'Active Directory pour la lecture
+function getAdUser(req) {
+    const ActiveDirectory = require('activedirectory2');
+    const ad_config = { url: process.env.AD_SERVER,
+           baseDN: process.env.AD_BASEDN,
+           username: req.cookies.token,
+           password: req.cookies.token2,
+           attributes: {
+            user: ['userPrincipalName', 'cn', 'telephoneNumber', 'otherTelephone', 'title', 'givenName', 'department' ]
+          } }
+    const ad = new ActiveDirectory(ad_config);
+
+    return ad
+}
+
 // Page d'accueil
 app.get("/", async (req, res) => {
     if (req.cookies.token !== undefined) {
-        ad.findUser(req.cookies.token, function(err, user) {
+        getAdUser(req).findUser(req.cookies.token, function(err, user) {
             if (err) {
                 console.log('ERROR: ' +JSON.stringify(err));
                 return;
@@ -70,6 +74,11 @@ app.get('/logout', (req, res) => {
     res.redirect('/login');
 });
 
+// Page quand le profil est modifié avec succès
+app.get("/success", (req, res) => {
+    res.render("success.ejs");
+});
+
 // Page erreur 404
 app.get('*', (req, res) => {
     res.render('404.ejs');
@@ -78,7 +87,7 @@ app.get('*', (req, res) => {
 // Envoi du formulaire de connexion
 app.post('/login', (req, res, next) => {
     const { userEmail, userPassword } = req.body; // Charge les données du formulaire
-    ad.authenticate(userEmail, userPassword, function(err, auth) {
+    getAdUser(req).authenticate(userEmail, userPassword, function(err, auth) {
       if (err) {
           console.log('ERROR: '+JSON.stringify(err));
           res.redirect('/login');
@@ -126,7 +135,7 @@ app.post('/', (req, res, next) => {
         }
     });
 
-    ad.findUser(req.cookies.token, function(err, user) {
+    getAdUser(req).findUser(req.cookies.token, function(err, user) {
         if (err) {
             console.log('ERROR: ' +JSON.stringify(err));
             return;
@@ -152,7 +161,7 @@ app.post('/', (req, res, next) => {
         }
     });
     
-    res.redirect('/');
+    res.redirect('/success');
 });
 
 // Hébergement du serveur sur le port 3000

@@ -94,6 +94,10 @@ form {
     flex-direction: column;
 }
 
+.centered {
+    text-align: center;
+}
+
 /* Responsive pour la version mobile */
 @media all and (max-width: 991px)
 {
