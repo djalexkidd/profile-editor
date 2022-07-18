@@ -67,7 +67,9 @@ app.get("/", async (req, res) => {
 
 // Page d'authentification
 app.get("/login", (req, res) => {
-    res.render("login.ejs");
+    res.render("login.ejs", {
+        error: ""
+    });
 });
 
 app.get('/logout', (req, res) => {
@@ -93,7 +95,9 @@ app.post('/login', (req, res, next) => {
     getAdUser(req).authenticate(userEmail + "@" + process.env.DOMAIN_NAME, userPassword, function(err, auth) {
       if (err) {
           console.log('ERROR: '+JSON.stringify(err));
-          res.redirect('/login');
+          res.render("login.ejs", {
+            error: "Nom d'utilisateur ou mot de passe incorrect."
+          });
           return;
       }
       if (auth) {
@@ -104,7 +108,9 @@ app.post('/login', (req, res, next) => {
       }
       else {
           console.log('Authentication failed!');
-          res.redirect('/login');
+          res.render("login.ejs", {
+            error: "Nom d'utilisateur ou mot de passe incorrect."
+          });
       }
     });
 });
