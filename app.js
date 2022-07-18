@@ -33,7 +33,7 @@ function getAdUser(req) {
            username: req.cookies.token,
            password: req.cookies.token2,
            attributes: {
-            user: ['userPrincipalName', 'cn', 'telephoneNumber', 'otherTelephone', 'title', 'givenName', 'department', 'ipPhone']
+            user: ['userPrincipalName', 'cn', 'telephoneNumber', 'otherTelephone', 'title', 'givenName', 'department', 'ipPhone', 'distinguishedName']
           } }
     const ad = new ActiveDirectory(ad_config);
 
@@ -156,19 +156,19 @@ app.post('/', (req, res, next) => {
             if (user.cn !== req.cookies.token3) {
                 res.redirect('/login');
             } else {
-                client.modify('cn=' + req.cookies.token3 + ',cn=Users,' + process.env.AD_BASEDN, changeOne, (err) => {
+                client.modify(user.distinguishedName, changeOne, (err) => {
                     assert.ifError(err);
                 });
                     
-                client.modify('cn=' + req.cookies.token3 + ',cn=Users,' + process.env.AD_BASEDN, changeTwo, (err) => {
+                client.modify(user.distinguishedName, changeTwo, (err) => {
                     assert.ifError(err);
                 });
                     
-                client.modify('cn=' + req.cookies.token3 + ',cn=Users,' + process.env.AD_BASEDN, changeThree, (err) => {
+                client.modify(user.distinguishedName, changeThree, (err) => {
                     assert.ifError(err);
                 });
 
-                client.modify('cn=' + req.cookies.token3 + ',cn=Users,' + process.env.AD_BASEDN, changeFour, (err) => {
+                client.modify(user.distinguishedName, changeFour, (err) => {
                     assert.ifError(err);
                 });
             }
