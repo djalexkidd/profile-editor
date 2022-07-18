@@ -2,6 +2,8 @@ require("dotenv").config();
 const express = require("express");
 const path = require("path");
 const cookieParser = require('cookie-parser')
+const https = require("https");
+const fs = require("fs");
 
 // Configuration de l'Active Directory pour la modification
 const ldap = require('ldapjs');
@@ -176,5 +178,14 @@ app.post('/', (req, res, next) => {
     res.redirect('/success');
 });
 
-// Hébergement du serveur sur le port 3000
-app.listen(3000, () => console.log("Server is running!"));
+// Hébergement du serveur
+if (process.env.SSL === "true") { // Si SSL est activé dans les envvars le site utilisera HTTPS
+    https.createServer({
+        key: fs.readFileSync(process.env.SSL_KEY),
+        cert: fs.readFileSync(process.env.SSL_CERT),
+      },app).listen(process.env.PORT, ()=>{
+        console.log("Server is running! HTTPS PORT " + process.env.PORT)
+    });
+} else { // Sinon utiliser HTTP
+    app.listen(process.env.PORT, () => console.log("Server is running! HTTP PORT " + process.env.PORT));
+}

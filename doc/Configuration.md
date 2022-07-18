@@ -5,6 +5,10 @@ Toutes les variables d'environnement se situent dans le fichier ```.env``` à la
 Voici un exemple de configuration :
 
 ```
-AD_SERVER=ldap://dc.domain.com  --- Adresse IP de l'Active Directory
-AD_BASEDN=dc=domain,dc=com      --- Domaine racine
+PORT=3000                           --- Port d'écoute
+AD_SERVER=ldap://dc.domain.com      --- Adresse IP de l'Active Directory
+AD_BASEDN=dc=domain,dc=com          --- Domaine racine
+SSL=true                            --- Utiliser HTTPS
+SSL_KEY=/usr/local/ssl/key.pem      --- Chemin de la clé
+SSL_CERT=/usr/local/ssl/cert.pem    --- Chemin du certificat
 ```
