@@ -11,4 +11,5 @@ AD_BASEDN=dc=domain,dc=com          --- Domaine racine
 SSL=true                            --- Utiliser HTTPS
 SSL_KEY=/usr/local/ssl/key.pem      --- Chemin de la clé
 SSL_CERT=/usr/local/ssl/cert.pem    --- Chemin du certificat
+DOMAIN_NAME=domain.com              --- Nom de domaine
 ```

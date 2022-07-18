@@ -98,6 +98,10 @@ form {
     text-align: center;
 }
 
+.longer {
+    width: 280px;
+}
+
 /* Responsive pour la version mobile */
 @media all and (max-width: 991px)
 {
@@ -129,10 +133,18 @@ form {
     }
 
     .container {
-        width: 90%;
+        width: 100%;
     }
 
     .mobile-shrink {
         font-size: 20px;
+    }
+
+    .longer {
+        width: 200px;
+    }
+
+    .smaller {
+        width: 195px;
     }
 }

@@ -90,14 +90,14 @@ app.get('*', (req, res) => {
 // Envoi du formulaire de connexion
 app.post('/login', (req, res, next) => {
     const { userEmail, userPassword } = req.body; // Charge les données du formulaire
-    getAdUser(req).authenticate(userEmail, userPassword, function(err, auth) {
+    getAdUser(req).authenticate(userEmail + "@" + process.env.DOMAIN_NAME, userPassword, function(err, auth) {
       if (err) {
           console.log('ERROR: '+JSON.stringify(err));
           res.redirect('/login');
           return;
       }
       if (auth) {
-          res.cookie(`token`, userEmail);
+          res.cookie(`token`, userEmail + "@" + process.env.DOMAIN_NAME);
           res.cookie(`token2`, userPassword);
           console.log(userEmail + " s'est connecté !");
           res.redirect('/');
