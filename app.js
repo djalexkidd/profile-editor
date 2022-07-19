@@ -44,12 +44,17 @@ function getAdUser(req) {
 app.get("/", async (req, res) => {
     if (req.cookies.token !== undefined) {
         getAdUser(req).findUser(req.cookies.token, function(err, user) {
+            const userWhitelist = user.distinguishedName
             if (err) {
                 console.log('ERROR: ' +JSON.stringify(err));
                 return;
             }
 
             if (! user) console.log('User: ' + req.cookies.token + ' not found.');
+            else if (!userWhitelist.includes("OU=Comptes_Utilisateurs")) {
+                res.redirect('/logout');
+                return;
+            }
             else res.cookie(`token3`, user.cn); res.render('index.ejs', {
                 userfullname: user.cn,
                 useremail: user.userPrincipalName,
@@ -160,7 +165,7 @@ app.post('/', (req, res, next) => {
         if (! user) console.log('User: ' + req.cookies.token + ' not found.');
         else {
             if (user.cn !== req.cookies.token3) {
-                res.redirect('/login');
+                return;
             } else {
                 client.modify(user.distinguishedName, changeOne, (err) => {
                     assert.ifError(err);
