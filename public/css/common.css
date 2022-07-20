@@ -102,6 +102,14 @@ form {
     width: 280px;
 }
 
+a {
+    font-size: 24px;
+}
+
+a:link {
+    text-decoration: none;
+}
+
 /* Responsive pour la version mobile */
 @media all and (max-width: 991px)
 {
