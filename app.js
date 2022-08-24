@@ -121,6 +121,15 @@ app.post('/login', (req, res, next) => {
     });
 });
 
+function checkPrefix(userTel) {
+    if (userTel.includes("+33 (0)")) {
+        return ""
+    }
+    else {
+        return "+33 (0)"
+    }
+}
+
 // Envoi du formulaire d'édition
 app.post('/', (req, res, next) => {
     client.bind(req.cookies.token, req.cookies.token2, (err) => {
@@ -132,14 +141,14 @@ app.post('/', (req, res, next) => {
     const changeOne = new ldap.Change({
         operation: 'replace',
         modification: {
-            telephoneNumber: [userTel]
+            telephoneNumber: checkPrefix(userTel) + userTel
         }
     });
 
     const changeTwo = new ldap.Change({
         operation: 'replace',
         modification: {
-            otherTelephone: [userTelMobile]
+            otherTelephone: checkPrefix(userTel) + userTelMobile
         }
     });
 

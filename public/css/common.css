@@ -108,6 +108,9 @@ form {
 
 a {
     font-size: 24px;
+}
+
+.user-menu {
     display: block;
     text-align: end;
     margin-right: 20px;
@@ -168,7 +171,7 @@ h1, h2 {
         width: 195px;
     }
 
-    a {
+    .user-menu {
         text-align: left;
     }
 }
