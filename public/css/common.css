@@ -121,8 +121,19 @@ a:link {
     text-decoration: none;
 }
 
-h1, h2 {
+.div-degeulasse {
     text-align: center;
+}
+
+.osef {
+    display: inline-block;
+    text-align: left;
+}
+
+.user-info {
+    display: flex;
+    justify-content: space-between;
+    width: 500px;
 }
 
 /* Responsive pour la version mobile */
