@@ -108,10 +108,18 @@ form {
 
 a {
     font-size: 24px;
+    display: block;
+    text-align: end;
+    margin-right: 20px;
+    line-height: 10px;
 }
 
 a:link {
     text-decoration: none;
+}
+
+h1, h2 {
+    text-align: center;
 }
 
 /* Responsive pour la version mobile */
@@ -158,6 +166,10 @@ a:link {
 
     .smaller {
         width: 195px;
+    }
+
+    a {
+        text-align: left;
     }
 }
 
