@@ -51,6 +51,7 @@ app.get("/", async (req, res) => {
             }
 
             if (! user) console.log('User: ' + req.cookies.token + ' not found.');
+            // Piège à la con, déconnecte si l'utilisateur n'est pas dans l'OU
             else if (!userWhitelist.includes("OU=Comptes_Utilisateurs")) {
                 res.redirect('/logout');
                 return;
