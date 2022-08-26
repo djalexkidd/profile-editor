@@ -16,6 +16,11 @@
     src : url('../fonts/vcr.ttf') format('truetype');
 }
 
+body {
+    background-color: #143058;
+    color: white;
+}
+
 /* Barre de navigation */
 nav 
 {
@@ -48,6 +53,7 @@ nav .main_pages p
 /* Logo du site */
 .logo {
     height: 100px;
+    margin-left: 10px;
 }
 
 /* En-tête */
@@ -117,8 +123,9 @@ a {
     line-height: 10px;
 }
 
-a:link {
+a:link, a:visited {
     text-decoration: none;
+    color: white;
 }
 
 .div-degeulasse {
