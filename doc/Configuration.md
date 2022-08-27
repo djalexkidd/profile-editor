@@ -12,4 +12,6 @@ SSL=true                            --- Utiliser HTTPS
 SSL_KEY=/usr/local/ssl/key.pem      --- Chemin de la clé
 SSL_CERT=/usr/local/ssl/cert.pem    --- Chemin du certificat
 DOMAIN_NAME=domain.com              --- Nom de domaine
+OU_TRAP=false                       --- Activer la liste blanche
+OU_TRAP_WHITELIST=OU=Utilisateurs   --- OU des utilisateurs pour la liste blanche
 ```
