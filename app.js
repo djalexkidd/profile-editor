@@ -136,19 +136,19 @@ app.post('/', (req, res, next) => {
         assert.ifError(err);
     });
 
-    const { userTel, userTelMobile, userAbr, userTitle } = req.body; // Charge les données du formulaire
+    const { userTel, userTelMobile, userAbr, userTitle, auto1, auto2 } = req.body; // Charge les données du formulaire
 
     const changeOne = new ldap.Change({
         operation: 'replace',
         modification: {
-            telephoneNumber: checkPrefix(userTel) + userTel
+            telephoneNumber: (auto1 ? checkPrefix(userTel) + userTel : userTel)
         }
     });
 
     const changeTwo = new ldap.Change({
         operation: 'replace',
         modification: {
-            otherTelephone: checkPrefix(userTel) + userTelMobile
+            otherTelephone: (auto2 ? checkPrefix(userTel) + userTelMobile : userTelMobile)
         }
     });
 
