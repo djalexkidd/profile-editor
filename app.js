@@ -148,7 +148,7 @@ app.post('/', (req, res, next) => {
     const changeTwo = new ldap.Change({
         operation: 'replace',
         modification: {
-            otherTelephone: (auto2 ? checkPrefix(userTel) + userTelMobile : userTelMobile)
+            otherTelephone: (auto2 ? checkPrefix(userTelMobile) + userTelMobile : userTelMobile)
         }
     });
 
