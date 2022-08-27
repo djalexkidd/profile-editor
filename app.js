@@ -33,7 +33,7 @@ function getAdUser(req) {
            username: req.cookies.token,
            password: req.cookies.token2,
            attributes: {
-            user: ['userPrincipalName', 'cn', 'telephoneNumber', 'otherTelephone', 'title', 'givenName', 'department', 'ipPhone', 'distinguishedName']
+            user: ['userPrincipalName', 'cn', 'telephoneNumber', 'mobile', 'title', 'givenName', 'department', 'ipPhone', 'distinguishedName']
           } }
     const ad = new ActiveDirectory(ad_config);
 
@@ -61,7 +61,7 @@ app.get("/", async (req, res) => {
                 useremail: user.userPrincipalName,
                 userdepartment: user.department,
                 usertelephone: user.telephoneNumber,
-                usermobile: user.otherTelephone,
+                usermobile: user.mobile,
                 usertitle: user.title,
                 userabr: user.ipPhone
             });
@@ -148,7 +148,7 @@ app.post('/', (req, res, next) => {
     const changeTwo = new ldap.Change({
         operation: 'replace',
         modification: {
-            otherTelephone: (auto2 ? checkPrefix(userTelMobile) + userTelMobile : userTelMobile)
+            mobile: (auto2 ? checkPrefix(userTelMobile) + userTelMobile : userTelMobile)
         }
     });
 
