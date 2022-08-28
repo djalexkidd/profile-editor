@@ -130,6 +130,15 @@ function checkPrefix(userTel) {
     }
 }
 
+function deletePrefix(userTel) {
+    if (userTel.includes("+33 (0)")) {
+        return userTel.slice(7)
+    }
+    else {
+        return userTel
+    }
+}
+
 // Envoi du formulaire d'édition
 app.post('/', (req, res, next) => {
     client.bind(req.cookies.token, req.cookies.token2, (err) => {
@@ -141,14 +150,14 @@ app.post('/', (req, res, next) => {
     const changeOne = new ldap.Change({
         operation: 'replace',
         modification: {
-            telephoneNumber: (auto1 ? checkPrefix(userTel) + userTel : userTel)
+            telephoneNumber: (auto1 ? checkPrefix(userTel) + userTel : deletePrefix(userTel))
         }
     });
 
     const changeTwo = new ldap.Change({
         operation: 'replace',
         modification: {
-            mobile: (auto2 ? checkPrefix(userTelMobile) + userTelMobile : userTelMobile)
+            mobile: (auto2 ? checkPrefix(userTelMobile) + userTelMobile : deletePrefix(userTelMobile))
         }
     });
 
